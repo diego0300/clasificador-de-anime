@@ -23,12 +23,12 @@ El diseño del software prioriza la calidad del código mediante la aplicación 
 * **Recomendaciones Inteligentes:** Generación automática de un "Top 5" basado en mejores calificaciones y género seleccionado.
 * **Persistencia de Datos:** Almacenamiento automático en archivos CSV (`animes.csv` y `listas.csv`).
 
-## 🛠️ Requisitos del Sistema
+## Requisitos del Sistema
 
 * **Java Development Kit (JDK):** Versión **21** o superior.
 * **Sistema Operativo:** Windows, macOS o Linux.
 
-## ▶️ Instrucciones de Ejecución
+## Instrucciones de Ejecución
 
 ### Opción 1: Ejecutar archivo JAR (Recomendado)
 El proyecto se puede ejecutar directamente si dispone del archivo empaquetado (`.jar`), sin necesidad de abrir un IDE.
