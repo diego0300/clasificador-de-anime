@@ -231,7 +231,6 @@ public class AnimeService {
     // Ordena alfabéticamente (A-Z)
     public List<Anime> listarOrdenadoPorTitulo() throws PersistenciaException {
         List<Anime> lista = repositorio.listarTodos();
-        // Usamos CASE_INSENSITIVE_ORDER para que 'a' y 'A' cuenten igual
         lista.sort((a1, a2) -> String.CASE_INSENSITIVE_ORDER.compare(a1.getTitulo(), a2.getTitulo()));
         return lista;
     }
