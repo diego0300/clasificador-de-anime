@@ -1,0 +1,208 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+package "model" {
+    enum EstadoAnime {
+        POR_VER
+        VIENDO
+        FINALIZADO
+        ABANDONADO
+    }
+
+    enum GeneroAnime {
+        SHONEN
+        SHOJO
+        SEINEN
+        ISEKAI
+        MECHA
+        SLICE_OF_LIFE
+    }
+
+    abstract class Anime {
+        - titulo: String
+        - anioLanzamiento: int
+        - estudio: String
+        - calificacion: int
+        - estado: EstadoAnime
+        - generos: Set<GeneroAnime>
+        + Anime(String titulo, int anio, String estudio)
+        + agregarGenero(GeneroAnime g): void
+        + setCalificacion(int calificacion): void
+        + setEstado(EstadoAnime estado): void
+        + setEstudio(String estudio): void
+        + getTitulo(): String 
+        + getAnioLanzamiento(): int 
+        + getEstado(): EstadoAnime 
+        + getCalificacion(): int 
+        + getGeneros(): Set<GeneroAnime>
+        + getEstudio(): String 
+        + {abstract} getDuracionTotal(): int
+    }
+
+    class AnimeSerie {
+        - cantidadCapitulos: int
+        + AnimeSerie(String titulo, int anioLanzamiento, String estudio, int cantidadCapitulos)
+        + getCantidadCapitulos(): int
+        + getDuracionTotal(): int 
+    }
+
+    class AnimePelicula {
+        - duracion: int
+        + AnimePelicula(String titulo, int anioLanzamiento, String estudio, int duracion)
+        + getDuracionMinutos(): int
+        + getDuracionTotal(): int
+    }
+
+    class ListaPersonalizada {
+        - nombreLista: String
+        - animes: List<Anime>
+        + ListaPersonzalidad(String nombreLista)
+        + agregarAnime(Anime a): void
+        + quitarAnime(Anime a): void
+        + getAnimes(): List<Anime>
+        + getNombreLista(): String
+    }
+
+    exception AnimeException
+}
+
+package "repository" {
+    interface AnimeRepository {
+        + guardar(Anime anime): void
+        + eliminar(String titulo): void
+        + buscarPorTitulo(String titulo): Anime
+        + listarTodos(): List<Anime>
+    }
+
+    class RepositorioAnimeArchivo {
+        - rutaArchivo: String
+        + guardar(Anime anime): void
+        + eliminar(Strign titulo): void
+        + listarTodos(): List<Anime>
+        - parsearLinea(String linea): Anime
+        - generarLineaCSV(Anime a): String
+    }
+
+    class RepositorioListas {
+        - archivo: String
+        + guardarListas(List<ListaPersonalizada> listas): void
+        + cargarListas(List<Anime> bibliotecaGlobal): List<ListaPersonalizada>
+    }
+
+    exception PersistenciaException
+}
+
+package "service" {
+    interface CriterioBusqueda {
+        + cumple(Anime): boolean
+    }
+
+    class FiltroGenero {
+        - generoBuscado: GeneroAnime
+        + cumple(Anime): boolean
+    }
+    class FiltroTitulo {
+        - terminoBusqueda: String
+        + cumple(Anime): boolean
+    }
+    class FiltroAnio {
+        - anioMin: int
+        - anioMax: int
+        + cumple(Anime): boolean
+    }
+    class FiltroEstado {
+        - estadoBuscado: EstadoAnime
+        + cumple(Anime): boolean
+    }
+    class FiltroCalificacion {
+        - calificacionMinima: int
+        + cumple(Anime): boolean
+    }
+
+    class AnimeService {
+        - repositorio: AnimeRepository
+        - repoListas: RepositorioListas
+        
+        + registrarSerie(String titulo, int anio, String studio, int caps): void
+        + registrarPelicula(String titulo, int anio, String studio, int duracion): void
+        + modificarEstado(String titulo, EstadoAnime nuevoEstado): void
+        + modificarCalificacion(String titulo, int nuevaCalificacion): void
+        + modificarEstudio(String titulo, String nuevoEstudio): void
+        + agregarGenero(String titulo, GeneroAnime nuevoGenero): void
+        + eliminarAnime(String titulo): void
+        
+        + filtrarAnimes(CriterioBusqueda criterio): List<Anime>
+        + listarOrdenadoPorTitulo(): List<Anime>
+        + listarOrdenadoPorCalificacion(): List<Anime>
+        + listarOrdenadoPorAnio(): List<Anime>
+        + obtenerTodos(): List<Anime>
+        
+        + crearListaPersonalizada(String nombre): void
+        + agregarAnimeALista(String nombreLista, String tituloAnime): void
+        + quitarAnimeDeLista(String nombreLista, String tituloAnime): void
+        
+        + getEstadisticasPorEstado(): Map
+        + getPromedioCalificacion(): double
+        + generarRecomendacion(Genero genero, int topN): List<Anime>
+    }
+
+    exception ValidacionException
+}
+
+package "ui" {
+    class VentanaPrincipal {
+        - servicio: AnimeService
+        - tabla: JTable
+        + iniciar(): void
+        - configurarUI(): void
+        - actualizarModelo(List<Anime>): void
+    }
+
+    class DialogoEditar {
+        - servicio: AnimeService
+        - tituloAnime: String
+        + DialogoEditar(...)
+        - configurarUI(): void
+        + isGuardado(): boolean
+    }
+}
+
+' --- RELACIONES ---
+
+' Herencia Model
+Anime <|-- AnimeSerie
+Anime <|-- AnimePelicula
+Anime --> EstadoAnime
+Anime --> GeneroAnime
+ListaPersonalizada o-- Anime
+
+' Excepciones
+AnimeException <|-- ValidacionException
+AnimeException <|-- PersistenciaException
+
+' Repository
+AnimeRepository <|.. RepositorioAnimeArchivo
+AnimeRepository <|.. RepositorioListas
+AnimeRepository ..> PersistenciaException : throws
+
+' Service
+AnimeService --> AnimeRepository : usa (DIP)
+AnimeService --> RepositorioListas : usa
+AnimeService ..> CriterioBusqueda : usa
+AnimeService ..> ValidacionException : throws
+AnimeService ..> Anime : crea (Creator)
+
+' Strategy
+CriterioBusqueda <|.. FiltroGenero
+CriterioBusqueda <|.. FiltroTitulo
+CriterioBusqueda <|.. FiltroAnio
+CriterioBusqueda <|.. FiltroEstado
+CriterioBusqueda <|.. FiltroCalificacion
+
+' UI
+VentanaPrincipal --> AnimeService : usa
+DialogoEditar --> AnimeService : usa
+VentanaPrincipal ..> DialogoEditar : crea
+
+@enduml
