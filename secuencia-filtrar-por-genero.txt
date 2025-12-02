@@ -1,0 +1,50 @@
+@startuml
+autonumber
+title Secuencia: Filtrar Animes (Patrón Strategy)
+
+actor "Usuario" as User
+participant ":VentanaPrincipal" as UI
+participant "estrategia:FiltroGenero" as Strategy
+participant ":AnimeService" as Service
+participant ":AnimeRepository" as Repo
+participant "listaFiltrada:List" as List
+
+User -> UI : Selecciona Filtrar por "SHONEN"
+activate UI
+
+' 1. La UI crea la estrategia específica
+UI -> Strategy ** : new FiltroGenero(SHONEN)
+
+' 2. La UI llama al servicio pasando la estrategia (Polimorfismo)
+UI -> Service : filtrarAnimes(estrategia)
+activate Service
+
+    ' 3. El servicio obtiene TODOS los datos
+    Service -> Repo : listarTodos()
+    activate Repo
+    Repo --> Service : listaCompleta
+    deactivate Repo
+
+    Service -> List ** : new ArrayList()
+
+    ' 4. El Loop donde ocurre la magia del Strategy
+    loop para cada 'anime' en listaCompleta
+        Service -> Strategy : cumple(anime)
+        activate Strategy
+        
+        ' El filtro decide la lógica interna
+        Strategy --> Service : true / false
+        deactivate Strategy
+
+        opt si devuelve true
+            Service -> List : add(anime)
+        end
+    end
+
+Service --> UI : listaFiltrada
+deactivate Service
+
+UI -> UI : actualizarModelo(listaFiltrada)
+deactivate UI
+
+@enduml

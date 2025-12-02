@@ -1,0 +1,44 @@
+@startuml
+autonumber
+title Secuencia: Registrar Nuevo Animé (Serie)
+
+actor "Usuario" as User
+participant ":VentanaPrincipal" as UI
+participant ":AnimeService" as Service
+participant "nuevaSerie:AnimeSerie" as AnimeObj
+participant ":AnimeRepository" as Repo
+
+User -> UI : Clic en "Nuevo Animé"
+activate UI
+
+UI -> UI : Solicitar datos (JOptionPane)\n(Titulo, Año, Estudio, Caps)
+
+User -> UI : Ingresa "Naruto", 2002, "Pierrot", 220
+
+' La UI delega al servicio (GRASP Controller)
+UI -> Service : registrarSerie("Naruto", 2002, "Pierrot", 220)
+activate Service
+
+    ' 1. Validaciones previas
+    Service -> Repo : buscarPorTitulo("Naruto")
+    activate Repo
+    Repo --> Service : null (No existe)
+    deactivate Repo
+
+    ' 2. Creación del objeto (GRASP Creator)
+    Service -> AnimeObj ** : new AnimeSerie("Naruto", 2002, "Pierrot", 220)
+    
+    ' 3. Persistencia (SOLID DIP)
+    Service -> Repo : guardar(nuevaSerie)
+    activate Repo
+    Repo --> Service : confirmación
+    deactivate Repo
+
+Service --> UI : éxito
+deactivate Service
+
+UI -> UI : cargarTabla()
+UI --> User : Mensaje "Registrado con éxito"
+deactivate UI
+
+@enduml
