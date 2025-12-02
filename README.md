@@ -30,10 +30,10 @@ El diseño del software prioriza la calidad del código mediante la aplicación 
 
 ## Instrucciones de Ejecución
 
-### Opción 1: Ejecutar archivo JAR (Recomendado)
+### Ejecutar archivo JAR
 El proyecto se puede ejecutar directamente si dispone del archivo empaquetado (`.jar`), sin necesidad de abrir un IDE.
 
-Ejecutando el siguiente comando: java -jar SistemaAnime.jar
+Ejecutando el siguiente comando: java -jar clasificador-de-anime.jar estando en el directorio correpondiente.
 
 ## Arquitectura del Proyecto
 
