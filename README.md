@@ -10,18 +10,11 @@ El diseño del software prioriza la calidad del código mediante la aplicación 
 
 ## Características Principales
 
-* **Gestión de Catálogo (CRUD):** Registro de Series (con capítulos) y Películas (con duración), edición unificada de detalles y eliminación segura con confirmación.
-* **Polimorfismo:** Tratamiento unificado de `AnimeSerie` y `AnimePelicula` respetando el Principio de Sustitución de Liskov (LSP).
-* **Búsqueda Avanzada (Strategy Pattern):** Filtros dinámicos combinables y extensibles (OCP):
-    * Por Título (búsqueda parcial).
-    * Por Género.
-    * Por Estado.
-    * Por Rango de Años.
-    * Por Calificación Mínima.
-* **Listas Personalizadas:** Creación de listas temáticas (ej. "Favoritos", "Para ver en vacaciones") y gestión de agregar/quitar animes.
-* **Estadísticas y Métricas:** Visualización de promedios globales de calificación y conteo de animes por estado.
-* **Recomendaciones Inteligentes:** Generación automática de un "Top 5" basado en mejores calificaciones y género seleccionado.
-* **Persistencia de Datos:** Almacenamiento automático en archivos CSV (`animes.csv` y `listas.csv`).
+* **CRUD Completo:** Alta, Baja y Modificación de Series (con capítulos) y Películas (con duración).
+* **Búsqueda Inteligente:** Filtros por Título, Género, Año, Estado y Calificación.
+* **Listas Personalizadas:** Creación de colecciones temáticas (ej. "Favoritos").
+* **Recomendador:** Sugerencias "Top 5" automáticas.
+* **Persistencia:** Guardado automático en `animes.csv` y `listas.csv`.
 
 ## Requisitos del Sistema
 
