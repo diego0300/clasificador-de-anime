@@ -50,6 +50,5 @@ Al ejecutar la aplicación, el sistema generará automáticamente dos archivos e
 
 Si estos archivos no existen, se crearán vacíos. Si ya existen, el programa cargará los datos automáticamente.
 
-## Autor
+## Autores
 
-    Facundo Damián Lara - Legajo: 1176633
