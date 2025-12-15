@@ -8,13 +8,16 @@ public class ListaPersonalizada {
     private List<Anime> animes;
 
     public ListaPersonalizada(String nombreLista) {
-        this.nombreLista = nombreLista;
-        this.animes = new ArrayList<>(); // Inicialización de la lista vacía
+        if (nombreLista == null || nombreLista.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre de la lista no puede estar vacío");
+        }
+        this.nombreLista = nombreLista.trim();
+        this.animes = new ArrayList<>();
     }
 
     public void agregarAnime(Anime a) {
-        // Valida que el animé no se encuentre en la lista
-        if (!animes.contains(a)) {
+        // Valida que el animé no sea nulo ni esté repetido
+        if (a != null && !animes.contains(a)) {
             animes.add(a);
         }
     }
@@ -24,7 +27,8 @@ public class ListaPersonalizada {
     }
 
     public List<Anime> getAnimes() {
-        return animes;
+        // Se devuelve una copia para proteger la lista interna
+        return new ArrayList<>(animes);
     }
 
     public String getNombreLista() {
@@ -36,3 +40,4 @@ public class ListaPersonalizada {
         return "Lista: " + nombreLista + " (" + animes.size() + " animes)";
     }
 }
+//Se agregaron validaciones en el constructor para asegurar que la lista tenga un nombre válido. También se validó que no se puedan agregar animes nulos
